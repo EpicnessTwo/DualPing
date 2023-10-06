@@ -15,6 +15,7 @@ const CALENDAR_ID = process.env.CALENDAR_ID || 'default';
 const LOCATION = process.env.LOCATION || 'New Location';
 const TTY_MODE = process.env.TTY_MODE === 'true';
 const PING_COUNT = process.env.PING_COUNT || 3;
+const DEBUG_MODE = process.env.DEBUG_MODE === 'true';
 
 let outageStart = null;
 
@@ -124,6 +125,10 @@ let failCount = 0;
 setInterval(async () => {
     const localPing = await ping.promise.probe(LOCAL_ROUTER);
     const internetPing = await ping.promise.probe(INTERNET_IP);
+
+    if (DEBUG_MODE) {
+        console.log('Local Ping: ' + localPing.alive + ' ' + localPing.time + 'ms | Internet Ping: ' + internetPing.alive + ' ' + internetPing.time + 'ms');
+    }
 
     if(localPing.alive && !internetPing.alive) {
         failCount++;

@@ -16,4 +16,5 @@ services:
       - CALENDAR_ID=yourgooglecalendarlink@group.calendar.google.com
       - LOCATION=New Location Test
       - PING_COUNT=3
+      - DEBUG_MODE=false
     restart: unless-stopped
