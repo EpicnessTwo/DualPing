@@ -95,7 +95,38 @@ function logOutage() {
 function sendDiscordNotification(start, end) {
     const durationMinutes = (end - start) / (1000 * 60);
     return axios.post(DISCORD_WEBHOOK_URL, {
-        content: `🚫 ${LOCATION} Internet Outage 🚫\nStarted: ${start.toISOString()}\nEnded: ${end.toISOString()}\nDuration: ${durationMinutes.toFixed(2)} minutes`
+        "content": null,
+        "embeds": [
+            {
+                "title": `${LOCATION} Internet Outage`,
+                "color": 16726072,
+                "fields": [
+                    {
+                        "name": "Outage Start",
+                        "value": `${start.toISOString()}`,
+                        "inline": true
+                    },
+                    {
+                        "name": "Outage Ended",
+                        "value": `${end.toISOString()}`,
+                        "inline": true
+                    },
+                    {
+                        "name": "Duration",
+                        "value": `${durationMinutes.toFixed(2)} minutes`
+                    }
+                ],
+                "author": {
+                    "name": "DualPing Alert",
+                    "url": "https://github.com/EpicnessTwo/DualPing"
+                },
+                "footer": {
+                    "text": "Powered by DualPing | https://github.com/EpicnessTwo/DualPing"
+                }
+            }
+        ],
+        "username": "DualPing Alerts",
+        "attachments": []
     });
 }
 
