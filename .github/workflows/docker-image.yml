@@ -15,4 +15,8 @@ jobs:
         id: commit_sha
         run: echo "::set-output name=SHA::$(git rev-parse --short ${{ github.sha }})"
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag dualping:${{ steps.commit_sha.outputs.SHA }}
+        run: |
+          docker build . --file Dockerfile --tag dualping:${{ steps.commit_sha.outputs.SHA }}
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+          docker tag dualping:${{ steps.commit_sha.outputs.SHA }} docker.pkg.github.com/${{ github.repository }}/dualping:${{ steps.commit_sha.outputs.SHA }}
+          docker push docker.pkg.github.com/${{ github.repository }}/dualping:${{ steps.commit_sha.outputs.SHA }}
