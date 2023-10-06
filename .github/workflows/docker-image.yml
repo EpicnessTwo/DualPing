@@ -44,5 +44,5 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: dualping:latest
           labels: ${{ steps.meta.outputs.labels }}
