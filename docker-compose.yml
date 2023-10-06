@@ -1,7 +1,7 @@
 version: '3'
 services:
   dualping:
-    image: ghcr.io/epicnesstwo/dualping:latest
+    image: ghcr.io/epicnesstwo/dualping:main
 #    tty: true
 #    stdin_open: true
     volumes:
