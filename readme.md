@@ -96,8 +96,8 @@ If you prefer to run the DualPing natively without Docker, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
-   git clone [your-repository-url]
-   cd [your-repository-directory]
+   git clone https://github.com/EpicnessTwo/DualPing
+   cd DualPing
     ```
 2. **Install Dependencies**:
    ```bash
