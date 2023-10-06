@@ -1,0 +1,19 @@
+version: '3'
+services:
+  dualping:
+    build: .
+#    tty: true
+#    stdin_open: true
+    volumes:
+      - ./google.json:/app/google.json
+    cap_add:
+      - NET_RAW
+    environment:
+      - TTY_MODE=false
+      - LOCAL_ROUTER=10.0.0.1
+      - INTERNET_IP=1.1.1.1
+      - DISCORD_WEBHOOK_URL=https://discordapp.com/api/webhooks/xxx/yyy
+      - CALENDAR_ID=yourgooglecalendarlink@group.calendar.google.com
+      - LOCATION=New Location Test
+      - PING_COUNT=3
+    restart: unless-stopped
