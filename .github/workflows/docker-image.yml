@@ -14,9 +14,12 @@ jobs:
       - name: Set commit SHA
         id: commit_sha
         run: echo "::set-output name=SHA::$(git rev-parse --short ${{ github.sha }})"
+      - name: Convert repository owner to lowercase
+        id: lowercase_owner
+        run: echo "::set-output name=LOWER_OWNER::${{ github.repository_owner | lower }}"
       - name: Build the Docker image
         run: |
           docker build . --file Dockerfile --tag dualping:${{ steps.commit_sha.outputs.SHA }}
-          echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
-          docker tag dualping:${{ steps.commit_sha.outputs.SHA }} docker.pkg.github.com/${{ github.repository_owner }}/dualping:${{ steps.commit_sha.outputs.SHA }}
-          docker push docker.pkg.github.com/${{ github.repository_owner }}/dualping:${{ steps.commit_sha.outputs.SHA }}
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ steps.lowercase_owner.outputs.LOWER_OWNER }} --password-stdin
+          docker tag dualping:${{ steps.commit_sha.outputs.SHA }} docker.pkg.github.com/${{ steps.lowercase_owner.outputs.LOWER_OWNER }}/dualping:${{ steps.commit_sha.outputs.SHA }}
+          docker push docker.pkg.github.com/${{ steps.lowercase_owner.outputs.LOWER_OWNER }}/dualping:${{ steps.commit_sha.outputs.SHA }}
