@@ -1,8 +1,10 @@
-FROM node:20
+FROM alpine:latest
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y iputils-ping
+RUN apk update && \
+    apk add nodejs npm iputils && \
+    rm -rf /var/cache/apk/*
 
 COPY package.json package-lock.json ./
 RUN npm install
