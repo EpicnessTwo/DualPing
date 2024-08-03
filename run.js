@@ -49,10 +49,10 @@ jwtClient.authorize(err => {
         consoleLog('error', 'Failed to authenticate with Google Calendar:', err);
     } else {
         consoleLog('info', 'Authenticated with Google Calendar.');
-        consoleLog('info', "Location:", LOCATION);
-        consoleLog('info', "Local Router IP:", LOCAL_ROUTER);
-        consoleLog('info', "Internet IP:", INTERNET_IP);
-        consoleLog('info', "Ping Interval:", PING_INTERVAL);
+        consoleLog('info', "Location: " + LOCATION);
+        consoleLog('info', "Local Router IP: " + LOCAL_ROUTER);
+        consoleLog('info', "Internet IP: " + INTERNET_IP);
+        consoleLog('info', "Ping Interval: " + PING_INTERVAL);
         if (TTY_MODE) {
             consoleLog('info', 'TTY Mode enabled, press "t" to push a test event.');
         } else {
