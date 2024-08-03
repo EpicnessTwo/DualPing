@@ -63,7 +63,7 @@ jwtClient.authorize(err => {
 
 function consoleLog(type, message) {
     if (type === 'debug' && !DEBUG_MODE) return;
-    console.log('info', `[${new Date().toISOString()}] [${type.toUpperCase()}] ${message}`);
+    console.log(`[${new Date().toISOString()}] [${type.toUpperCase()}] ${message}`);
 }
 
 function logOutage(start, end) {
