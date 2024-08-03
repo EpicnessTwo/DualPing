@@ -46,32 +46,37 @@ const jwtClient = new google.auth.JWT(
 
 jwtClient.authorize(err => {
     if(err) {
-        console.error('Failed to authenticate with Google Calendar:', err);
-        return;
+        consoleLog('error', 'Failed to authenticate with Google Calendar:', err);
     } else {
-        console.log('Authenticated with Google Calendar.');
-        console.log("Location:", LOCATION);
-        console.log("Local Router IP:", LOCAL_ROUTER);
-        console.log("Internet IP:", INTERNET_IP);
-        console.log("Ping Interval:", PING_INTERVAL);
+        consoleLog('info', 'Authenticated with Google Calendar.');
+        consoleLog('info', "Location:", LOCATION);
+        consoleLog('info', "Local Router IP:", LOCAL_ROUTER);
+        consoleLog('info', "Internet IP:", INTERNET_IP);
+        consoleLog('info', "Ping Interval:", PING_INTERVAL);
         if (TTY_MODE) {
-            console.log('TTY Mode enabled, press "t" to push a test event.');
+            consoleLog('info', 'TTY Mode enabled, press "t" to push a test event.');
         } else {
-            console.log('TTY Mode disabled, no testing events will be pushed.');
+            consoleLog('info', 'TTY Mode disabled, no testing events will be pushed.');
         }
     }
 });
 
-function logOutage() {
-    if(!outageStart) return;
+function consoleLog(type, message) {
+    if (type === 'debug' && !DEBUG_MODE) return;
+    consoleLog('info', `[${new Date().toISOString()}] [${type.toUpperCase()}] ${message}`);
+}
+
+function logOutage(start, end) {
+    if (!start || !end) return;
+
     const event = {
         summary: LOCATION + ' Internet Outage',
         description: 'Duration of internet outage.',
         start: {
-            dateTime: outageStart.toISOString()
+            dateTime: start.toISOString()
         },
         end: {
-            dateTime: new Date().toISOString()
+            dateTime: new end.toISOString()
         }
     };
 
@@ -80,13 +85,13 @@ function logOutage() {
         calendarId: CALENDAR_ID,
         resource: event
     }, err => {
-        if(err) console.error('Error logging event:', err);
+        if(err) consoleLog('error','Error logging event:', err);
         else {
-            console.log('Logged outage to Google Calendar:', outageStart, 'to', new Date());
-            sendDiscordNotification(outageStart, new Date()).then(() => {
+            consoleLog('info', 'Logged outage to Google Calendar:', start, 'to', end);
+            sendDiscordNotification(start, end).then(() => {
                 outageStart = null;
             }).catch(error => {
-                console.error('Failed to send Discord notification:', error);
+                consoleLog('error', 'Failed to send Discord notification:', error);
             });
         }
     });
@@ -147,8 +152,8 @@ function pushTestEvent() {
         calendarId: CALENDAR_ID,
         resource: event
     }, err => {
-        if(err) console.error('Error pushing test event:', err);
-        else console.log('Pushed test event to Google Calendar.');
+        if(err) consoleLog('error', 'Error pushing test event:', err);
+        else consoleLog('info', 'Pushed test event to Google Calendar.');
     });
 }
 
@@ -157,19 +162,18 @@ setInterval(async () => {
     const localPing = await ping.promise.probe(LOCAL_ROUTER);
     const internetPing = await ping.promise.probe(INTERNET_IP);
 
-    if (DEBUG_MODE) {
-        console.log('Local Ping: ' + localPing.alive + ' ' + localPing.time + 'ms | Internet Ping: ' + internetPing.alive + ' ' + internetPing.time + 'ms');
-    }
+    consoleLog('debug', 'Local Ping: ' + localPing.alive + ' ' + localPing.time + 'ms | Internet Ping: ' + internetPing.alive + ' ' + internetPing.time + 'ms');
 
-    if(localPing.alive && !internetPing.alive) {
+
+    if (localPing.alive && !internetPing.alive) {
         failCount++;
         if (failCount >= PING_COUNT) {
-            console.log('Outage Detected!');
+            consoleLog('warn', 'Outage Detected!');
             if(!outageStart) outageStart = new Date();
         }
     } else if(outageStart) {
         failCount = 0;
-        console.log('Outage Finished!');
-        logOutage();
+        consoleLog('info', 'Outage Finished!');
+        await logOutage(outageStart, new Date());
     }
 }, PING_INTERVAL);
