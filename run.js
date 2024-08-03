@@ -76,7 +76,7 @@ function logOutage(start, end) {
             dateTime: start.toISOString()
         },
         end: {
-            dateTime: new end.toISOString()
+            dateTime: end.toISOString()
         }
     };
 
