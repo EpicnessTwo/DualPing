@@ -87,11 +87,11 @@ function logOutage(start, end) {
     }, err => {
         if(err) consoleLog('error','Error logging event:', err);
         else {
-            consoleLog('info', 'Logged outage to Google Calendar:', start, 'to', end);
+            consoleLog('info', 'Logged outage to Google Calendar: ' + start + ' to ' + end);
             sendDiscordNotification(start, end).then(() => {
                 outageStart = null;
             }).catch(error => {
-                consoleLog('error', 'Failed to send Discord notification:', error);
+                consoleLog('error', 'Failed to send Discord notification: ' + error);
             });
         }
     });
@@ -152,7 +152,7 @@ function pushTestEvent() {
         calendarId: CALENDAR_ID,
         resource: event
     }, err => {
-        if(err) consoleLog('error', 'Error pushing test event:', err);
+        if(err) consoleLog('error', 'Error pushing test event: ' + err);
         else consoleLog('info', 'Pushed test event to Google Calendar.');
     });
 }
